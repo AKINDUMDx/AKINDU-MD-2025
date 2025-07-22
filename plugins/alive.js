@@ -2,118 +2,71 @@ const { cmd } = require('../command');
 const os = require("os");
 const { runtime } = require('../lib/functions');
 const config = require('../config');
-const moment = require('moment-timezone');
 
-// Time-based greeting messages
-const timeGreetings = {
-    morning: [
-        "☀️ Good morning !" 
-    ],
-    afternoon: [
-        "🌞 Good afternoon !"
-    ],
-    evening: [
-        "🌇 Good evening !"
-    ],
-    night: [
-        "🌜 Good night !"
-    ]
+// Date & greeting based on Sri Lanka timezone
+const getGreeting = () => {
+    const now = new Date().toLocaleString("en-US", { timeZone: "Asia/Colombo" });
+    const hour = new Date(now).getHours();
+
+    if (hour < 12) return "Good Morning 🌅";
+    if (hour < 17) return "Good Afternoon ☀️";
+    if (hour < 20) return "Good Evening 🌇";
+    return "Good Night 🌙";
+};
+
+const getSriLankaTime = () => {
+    const now = new Date().toLocaleString("en-US", { timeZone: "Asia/Colombo" });
+    const date = new Date(now);
+    const pad = (n) => n.toString().padStart(2, '0');
+
+    const day = pad(date.getDate());
+    const month = pad(date.getMonth() + 1);
+    const year = date.getFullYear();
+    const hours = pad(date.getHours());
+    const minutes = pad(date.getMinutes());
+    const seconds = pad(date.getSeconds());
+
+    return `${day}-${month}-${year} | ${hours}:${minutes}:${seconds}`;
 };
 
 cmd({
     pattern: "alive",
-    alias: ["status", "hi", "hello"],
-    react: "🤖",
-    desc: "Get time-based greeting with Sri Lanka time",
-    category: "core",
+    alias: ["status", "online", "a"],
+    desc: "Check bot is alive or not",
+    category: "main",
+    react: "⚡",
     filename: __filename
 },
-async(conn, mek, m, {from, pushname, reply}) => {
+async (conn, mek, m, { from, sender, reply }) => {
     try {
-        // Get current time in Sri Lanka
-        const now = moment().tz('Asia/Colombo');
-        const currentHour = now.hour();
-        const currentTime = now.format('hh:mm:ss A');
-        const currentDate = now.format('dddd, MMMM D, YYYY');
-        
-        // Determine time of day
-        let timeOfDay;
-        let greetingPool;
-        
-        if (currentHour < 12) {
-            timeOfDay = "morning";
-            greetingPool = timeGreetings.morning;
-        } else if (currentHour < 17) { // 12pm-5pm
-            timeOfDay = "afternoon";
-            greetingPool = timeGreetings.afternoon;
-        } else if (currentHour < 21) { // 5pm-9pm
-            timeOfDay = "evening";
-            greetingPool = timeGreetings.evening;
-        } else { // 9pm-12am
-            timeOfDay = "night";
-            greetingPool = timeGreetings.night;
-        }
-        
-        // Select random greeting for the time period
-        const randomGreeting = greetingPool[Math.floor(Math.random() * greetingPool.length)]
-            .replace('{name}', pushname.split(' ')[0]);
-        
-        // Simplified status message
-        const statusMessage = `*🤖 ${config.BOT_NAME} 𝐀𝐋𝐈𝐕𝐄 🤖*
+        const greeting = getGreeting();
+        const sriLankaTime = getSriLankaTime();
 
-> ✨ *Bot is Active & Online!*
+        const status = `
+╭───〔 *🤖 ${config.BOT_NAME} STATUS* 〕───◉
+│✨ *${greeting}*
+│📅 *Date & Time:* ${sriLankaTime}
+│
+│🧠 *Owner:* ${config.OWNER_NAME}
+│⚡ *Version:* 4.0.0
+│📝 *Prefix:* [${config.PREFIX}]
+│📳 *Mode:* [${config.MODE}]
+│💾 *RAM:* ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB / ${(os.totalmem() / 1024 / 1024).toFixed(2)}MB
+│🖥️ *Host:* ${os.hostname()}
+│⌛ *Uptime:* ${runtime(process.uptime())}
+╰────────────────────◉
+> ${config.DESCRIPTION}`;
 
-*👋 Hello *${pushname}* *${randomGreeting}*
+        await conn.sendMessage(from, {
+            image: { url: config.MENU_IMAGE_URL },
+            caption: status,
+            contextInfo: {
+                mentionedJid: [m.sender]
+            }
+        }, { quoted: mek });
 
-*☵ 🕓 Time : ${currentTime}*
-
-*☵ 📆 Date : ${currentDate}*
-
-*☵ 🧠 Owner : ${config.OWNER_NAME}*
-
-*☵ ⚡ Version : 2.0.0*
-
-*☵ 📝 Prefix : ${config.PREFIX}*
-
-*☵ 📳 Mode : ${config.MODE}*
-
-*☵ 💾 Ram : ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB*
-
-*☵ 🖥 Host : ${os.hostname()}*
-
-*☵ ⌛ Uptime : ${runtime(process.uptime())}*
-
-> *${config.DESCRIPTION}*`;
-
-        // Send message with image or fallback to text
-        const opts = {
-            quoted: mek
-        };
-
-        if (config.ALIVE_IMG) {
-            opts.image = { url: config.ALIVE_IMG };
-            opts.caption = statusMessage;
-        } else {
-            opts.text = statusMessage;
-        }
-
-        await conn.sendMessage(from, opts);
-
-    } catch (error) {
-        console.error('[ALIVE ERROR]', error);
-        try {
-            await reply('⚠️ Oops! Something went wrong. Please try again.');
-        } catch (fallbackError) {
-            console.error('[FALLBACK ERROR]', fallbackError);
-        }
+    } catch (e) {
+        console.error("Alive Error:", e);
+        reply(`❌ An error occurred: ${e.message}`);
     }
 });
-
-// Command metadata
-commands.alive = {
-    name: "Greeting",
-    desc: "Shows time-based greeting with Sri Lanka time",
-    usage: `.alive - Time-based greeting
-.status/.ping/.hi/.hello - Same as alive`,
-    category: "core"
-};
