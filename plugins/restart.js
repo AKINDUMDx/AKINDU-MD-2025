@@ -3,7 +3,7 @@ const { sleep } = require("../lib/functions");
 
 cmd({  
     pattern: "restart",  
-    desc: "Restart Akindu_MD",  
+    desc: "Restart AKINDU-MD",  
     category: "owner",  
     filename: __filename  
 },  
