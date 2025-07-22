@@ -3,8 +3,6 @@ const { cmd } = require("../command");
 
 // twitter-hd-dl
 
-const axios = require("axios");
-
 cmd({
   pattern: "twitter",
   alias: ["tweet", "twdl"],
