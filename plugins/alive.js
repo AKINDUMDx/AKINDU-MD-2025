@@ -42,20 +42,27 @@ async (conn, mek, m, { from, sender, reply }) => {
         const greeting = getGreeting();
         const sriLankaTime = getSriLankaTime();
 
-        const status = `
-╭───〔 *🤖 ${config.BOT_NAME} STATUS* 〕───◉
-│✨ *${greeting}*
-│📅 *Date & Time:* ${sriLankaTime}
-│
-│🧠 *Owner:* ${config.OWNER_NAME}
-│⚡ *Version:* 4.0.0
-│📝 *Prefix:* [${config.PREFIX}]
-│📳 *Mode:* [${config.MODE}]
-│💾 *RAM:* ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB / ${(os.totalmem() / 1024 / 1024).toFixed(2)}MB
-│🖥️ *Host:* ${os.hostname()}
-│⌛ *Uptime:* ${runtime(process.uptime())}
-╰────────────────────◉
-> ${config.DESCRIPTION}`;
+        const status = `*🤖 𝐀𝐋𝐈𝐕𝐄 𝐒𝐓𝐀𝐓𝐔𝐒 🤖*
+        
+*☵ ✨ *${greeting}*
+
+*☵ 📅 Date & Time :* *${sriLankaTime}*
+
+*☵ 🧠 Owner : ${config.OWNER_NAME}*
+
+*☵ ⚡ Version : 2.0.0*
+
+*☵ 📝 Prefix : ${config.PREFIX}*
+
+*☵ 📳 Mode : ${config.MODE}*
+
+*☵ 💾 RAM : ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB*
+
+*☵ 🖥️ Host : ${os.hostname()}*
+
+*☵ ⌛ Uptime : ${runtime(process.uptime())}*
+
+> *𝐀𝐊𝐈𝐍𝐃𝐔 𝐌𝐃*`;
 
         await conn.sendMessage(from, {
             image: { url: config.MENU_IMAGE_URL },
