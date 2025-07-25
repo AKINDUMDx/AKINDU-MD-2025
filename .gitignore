@@ -1,3 +1,4 @@
 secret.txt
 git add .gitignore
 git commit -m "Ignore secret.txt"
+git rm --cached secret.txt
