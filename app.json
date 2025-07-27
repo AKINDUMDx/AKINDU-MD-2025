@@ -1,6 +1,6 @@
 {
   "name": "AKINDU-MD",
-  "description": "Javascript WhatsApp bot made by Akindu Dimansha",
+  "description": "Javascript WhatsApp bot made by AKINDU-MD Official",
   "logo": "https://files.catbox.moe/wqp3y9.jpg",
   "keywords": ["AKINDU-MD"],
   "success_url": "/",
@@ -91,7 +91,7 @@
     "OWNER_NAME": {
       "description": "Type Bot Owner Name.",
       "required": false,
-      "value": "Akindu Dimansha"
+      "value": "AKINDU-MD Official"
 }, 
 
     "OWNER_NUMBER": {
@@ -143,7 +143,7 @@
      "DESCRIPTION": {
       "description": "add caption for menu and other",
       "required": false,
-      "value": "*© Power By AKINDU-MD*"
+      "value": "*AKINDU-MD*"
     },
 
       "DELETE_LINKS": {
@@ -216,3 +216,4 @@
      ],
   "stack": "heroku-24"
 }
+  
